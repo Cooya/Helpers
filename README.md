@@ -1,8 +1,17 @@
 # Helpers
 Utility NPM packages helping me to code faster in NodeJS
 
+* ~~[@coya/logs](https://www.npmjs.com/package/@coya/logs)~~ (deprecated)
+* ~~[@coya/database](https://www.npmjs.com/package/@coya/database)~~ (deprecated)
+* [@coya/time](https://www.npmjs.com/package/@coya/time)
+* [@coya/contact](https://www.npmjs.com/package/@coya/contact)
+* [@coya/utils](https://www.npmjs.com/package/@coya/utils)
+* [@coya/logger](https://www.npmjs.com/package/@coya/logger)
+* [@coya/puppy](https://www.npmjs.com/package/@coya/puppy)
+* [@coya/counter](https://www.npmjs.com/package/@coya/counter)
 
-### Utils - API
+
+### @coya/utils - API
 -   async function readXMLFile(filePath)
 -   async function writeXMLFile(filePath, content)
 -   async function downloadFile(url, destFolder, fileName = null, forceDownload = false)
