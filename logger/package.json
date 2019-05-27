@@ -1,0 +1,15 @@
+{
+  "name": "@coya/logger",
+  "version": "0.0.5",
+  "description": "Winston logger for my personal use",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Coya",
+  "license": "ISC",
+  "dependencies": {
+    "winston": "^3.2.1",
+    "winston-mongodb": "^5.0.0"
+  }
+}

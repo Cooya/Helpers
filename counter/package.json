@@ -1,0 +1,20 @@
+{
+  "name": "@coya/counter",
+  "version": "0.0.6",
+  "description": "Mongoose counter for counting",
+  "main": "index.js",
+  "dependencies": {
+    "dateformat": "^3.0.3",
+    "mongodb": "^3.2.3"
+  },
+  "devDependencies": {
+    "express": "^4.16.4",
+    "express-session": "^1.16.1",
+    "supertest": "^4.0.2"
+  },
+  "scripts": {
+    "test": "node test/counter_test.js && node test/visitors_test.js"
+  },
+  "author": "Coya",
+  "license": "ISC"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "@coya/contact",
+  "version": "0.1.2",
+  "description": "Contact interface service",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/test.js"
+  },
+  "author": "Coya",
+  "license": "ISC",
+  "dependencies": {
+    "nodemailer": "^4.4.0"
+  }
+}

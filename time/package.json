@@ -1,0 +1,11 @@
+{
+  "name": "@coya/time",
+  "version": "0.1.1",
+  "description": "Time utility service",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/test.js"
+  },
+  "author": "Coya",
+  "license": "ISC"
+}

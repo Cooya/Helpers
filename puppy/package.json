@@ -1,0 +1,15 @@
+{
+  "name": "@coya/puppy",
+  "version": "0.1.1",
+  "description": "Utility methods for better handle of Puppeteer",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/test.js"
+  },
+  "author": "Coya",
+  "license": "ISC",
+  "dependencies": {
+    "puppeteer": "^1.14.0",
+    "sleep": "^6.0.0"
+  }
+}

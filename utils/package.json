@@ -1,0 +1,20 @@
+{
+  "name": "@coya/utils",
+  "version": "1.5.5",
+  "description": "Utility methods for my personal use",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Coya",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "cheerio": "^1.0.0-rc.2",
+    "iconv-lite": "^0.4.24",
+    "mkdirp": "^0.5.1",
+    "request": "^2.88.0",
+    "sleep": "^6.0.0",
+    "xml2js": "^0.4.19"
+  }
+}
