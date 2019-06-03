@@ -149,6 +149,16 @@ async function asyncThreads(array, callback, threadsNumber = 10) {
 }
 
 async function request(method, url, options = {}) {
+	let data = null, headers = {};
+	if(options.body) {
+		data = querystring.stringify(options.body);
+		headers = Object.assign({'Content-Type': 'application/x-www-form-urlencoded'}, options.headers);
+	}
+	else if(options.json) {
+		data = JSON.stringify(options.json);
+		headers = Object.assign({'Content-Type': 'application/json'}, options.headers);
+	}
+
 	let i = 0;
 	let res;
 	while (++i) {
@@ -157,14 +167,9 @@ async function request(method, url, options = {}) {
 				method,
 				url,
 				params: options.params,
-				data: options.body && querystring.stringify(options.body), // application/x-www-form-urlencoded by default
+				data,
 				responseType: options.encoding ? 'arraybuffer' : 'text',
-				headers: Object.assign(
-					{
-						'Content-Type': 'application/x-www-form-urlencoded'
-					},
-					options.headers
-				)
+				headers
 			});
 			break;
 		} catch (e) {
