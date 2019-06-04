@@ -1,10 +1,10 @@
 {
   "name": "@coya/utils",
-  "version": "1.5.7",
+  "version": "1.5.8",
   "description": "Utility methods for my personal use",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test/test.js"
   },
   "author": "Coya",
   "license": "ISC",

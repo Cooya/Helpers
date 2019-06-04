@@ -158,6 +158,8 @@ async function request(method, url, options = {}) {
 		data = JSON.stringify(options.json);
 		headers = Object.assign({'Content-Type': 'application/json'}, options.headers);
 	}
+	else
+		headers = options.headers;
 
 	let i = 0;
 	let res;
@@ -166,6 +168,7 @@ async function request(method, url, options = {}) {
 			res = await axios({
 				method,
 				url,
+				timeout: options.timeout || 5000,
 				params: options.params,
 				data,
 				responseType: options.encoding ? 'arraybuffer' : 'text',
