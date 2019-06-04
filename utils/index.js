@@ -249,6 +249,7 @@ Date.prototype.isNHoursOld = function(n) {
 Date.fromSeconds = (s) => new Date(1970, 0, 1, 0, 0, s);
 
 String.prototype.capitalizeFirstLetter = function() {return this.charAt(0).toUpperCase() + this.slice(1).toLowerCase();};
+String.prototype.simplify = function() {return this.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');};
 
 module.exports = {
 	setLogger,
