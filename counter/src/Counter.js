@@ -56,4 +56,8 @@ module.exports = class {
 		id = options.dailyCounter ? id + '-' + dateFormat(new Date(), 'dd-mm-yyyy') : id;
 		return counters.deleteOne({id});
 	}
+
+	static clearAll() {
+		return mongoConnection.db().collection('counters').drop();
+	}
 };

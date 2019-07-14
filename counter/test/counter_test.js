@@ -1,25 +1,26 @@
+const assert = require('assert');
+const dateFormat = require('dateformat');
+
 const Counter = require('../src/Counter');
 
 (async () => {
 	await Counter.connect('mongodb://localhost/test');
+	await Counter.clearAll();
+	assert.equal((await Counter.all()).length, 0);
 
 	let counter = Counter.get('hey');
-	console.log(counter.id, await counter.val());
-
+	let value = await counter.val();
 	await counter.inc();
-	console.log(counter.id, await counter.val());
+	assert.equal(counter.id, 'hey');
+	assert.equal(await counter.val(), value + 1);
 
-	counter = Counter.get('hola', {dailyCounter: true});
-	console.log(counter.id, await counter.val());
-
+	counter = Counter.get('toto.com-requests', {dailyCounter: true});
+	value = await counter.val();
 	await counter.inc();
-	console.log(counter.id, await counter.val());
+	assert.equal(counter.id, 'toto.com-requests' + '-' + dateFormat(new Date(), 'dd-mm-yyyy'));
+	assert.equal(await counter.val(), value + 1);
 
-	counter = Counter.get('toto.com-requests', {dailyCounter: true})
-	console.log(counter.id, await counter.val());
-
-	const counters = await Counter.all();
-	counters.map((c) => console.log(c));
-
+	assert.equal((await Counter.all()).length, 2);
 	await Counter.disconnect();
+	console.log('Counters test ok.');
 })();
