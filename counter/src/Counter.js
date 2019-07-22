@@ -31,7 +31,9 @@ module.exports = class {
 	}
 
 	static async disconnect() {
-		return mongoConnection.close();
+		await mongoConnection.close();
+		mongoConnection = null;
+		counters = null;
 	}
 
 	static get(id, options = {}) {
