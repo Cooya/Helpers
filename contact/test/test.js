@@ -1,5 +1,5 @@
 const config = require('./config');
-const Contact = require('./index');
+const Contact = require('../index');
 
 const contact = new Contact(config);
 
