@@ -1,7 +1,7 @@
 const Counter = require('./Counter');
 
 const ips = {};
-const sessions = {}; // it allows to handle multiple requests at the same time
+const sessions = {}; // it is just to handle multiple requests at the same time
 
 module.exports = (req, res, next) => {
 	Counter.inc(req.hostname + '-requests', {dailyCounter: true});
@@ -14,14 +14,15 @@ module.exports = (req, res, next) => {
 	if(sessions[req.session.id]) req.session = sessions[req.session.id];
 
 	// determine the today date
-	const date = new Date(), todayDate = date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear();
+	const date = new Date(), todayDate = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
 
-	// first, set the last visit time and then, at the second request, set the last visit date
-	if(req.session.lastVisitTime && req.session.lastVisitDate !== todayDate) {
+	// "notFirstVisit" is used because when several requests come at the same time from the same web client, they are not identified with the same session id yet
+	// the last visit date is set only after the second wave of requests when the cookie has been initialized client-side
+	if(req.session.notFirstVisit && req.session.lastVisitDate !== todayDate) {
 		req.session.lastVisitDate = todayDate;
 		Counter.inc(req.hostname + '-visitors', {dailyCounter: true});
 	}
-	req.session.lastVisitTime = date.getTime();
+	req.session.notFirstVisit = true;
 
 	// save into memory
 	sessions[req.session.id] = req.session;

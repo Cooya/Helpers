@@ -1,6 +1,6 @@
 {
   "name": "@coya/counter",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Mongoose counter for counting",
   "main": "index.js",
   "dependencies": {
