@@ -37,7 +37,9 @@ module.exports = class {
 	}
 
 	static get(id, options = {}) {
-		id = options.dailyCounter ? id + '-' + dateFormat(new Date(), 'dd-mm-yyyy') : id;
+		if(options.dailyCounter || options.daily) id = id + '-' + dateFormat(new Date(), 'dd-mm-yyyy');
+		else if(options.global) id = id + '-global';
+
 		if(!cache[id]) cache[id] = new this(id);
 		return cache[id];
 	}
@@ -55,7 +57,9 @@ module.exports = class {
 	}
 
 	static clear(id, options = {}) {
-		id = options.dailyCounter ? id + '-' + dateFormat(new Date(), 'dd-mm-yyyy') : id;
+		if(options.dailyCounter || options.daily) id = id + '-' + dateFormat(new Date(), 'dd-mm-yyyy');
+		else if(options.global) id = id + '-global';
+
 		return counters.deleteOne({id});
 	}
 
