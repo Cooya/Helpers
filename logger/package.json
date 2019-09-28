@@ -1,6 +1,6 @@
 {
   "name": "@coya/logger",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "description": "Winston logger for my personal use",
   "main": "index.js",
   "scripts": {

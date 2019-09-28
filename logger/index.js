@@ -2,11 +2,16 @@ const path = require('path');
 const util = require('util');
 const { createLogger, config, format, transports } = require('winston');
 
-module.exports = ({dbUrl, collection = 'log', enabled} = {}) => {
-	const moduleName = process.mainModule ? path.basename(process.mainModule.filename) : 'unknown';
+const colors = {
+	error: 'red',
+	warning: 'yellow',
+	info: 'green',
+	debug: 'white'
+};
 
-	let transport;
-	let exitOnError;
+module.exports = ({db = null, file = null, console = false} = {}) => {
+	const moduleName = process.mainModule ? path.basename(process.mainModule.filename) : 'unknown';
+	const transportsList = [];
 	const formats = [
 		format.timestamp({ format: 'DD/MM HH:mm:ss' }),
 		format.label({ label: moduleName }),
@@ -18,31 +23,42 @@ module.exports = ({dbUrl, collection = 'log', enabled} = {}) => {
 		})
 	];
 
-	if (dbUrl && enabled) { // logging into database
+	if (db) { // logging into database
 		require('winston-mongodb');
-		transport = new transports.MongoDB({
+		transportsList.push(new transports.MongoDB({
 			level: 'debug',
-			db: dbUrl,
-			collection,
+			db,
+			collection: db.split('/').pop(),
 			label: moduleName,
 			handleExceptions: true,
 			format: format.metadata({ fillWith: ['stack'] })
-		});
-		exitOnError = false;
-	} else { // logging into console
-		formats.unshift(format.colorize());
-		transport = new transports.Console({
-			level: process.env.NODE_ENV == 'debug' ? 'debug' : 'info',
-			handleExceptions: true
-		});
-		exitOnError = true;
+		}));
 	}
 
-	return createLogger({
+	if (file) { // logging into file
+		formats.unshift(format.colorize());
+		transportsList.push(new transports.File({
+			level: process.env.DEBUG ? 'debug' : 'info',
+			filename: file,
+			options: {flags: 'w'}
+		}));
+	}
+
+	if (console || !transportsList.length) { // logging into console
+		formats.unshift(format.colorize({ colors } ));
+		transportsList.push(new transports.Console({
+			level: process.env.DEBUG ? 'debug' : 'info',
+			handleExceptions: true
+		}));
+	}
+
+	const logger = createLogger({
 		levels: config.syslog.levels,
-		level: 'debug',
-		exitOnError,
-		transports: [transport],
+		level: process.env.DEBUG ? 'debug' : 'info',
+		exitOnError: false,
+		transports: transportsList,
 		format: format.combine(...formats)
 	});
+	logger.warn = logger.warning; // alias
+	return logger;
 }
