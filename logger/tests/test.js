@@ -12,8 +12,13 @@ const logger = require('../index');
 	consoleLogger.warning('pas de fichier');
 	consoleLogger.debug('marre des bugs');
 
-	const fileAndConsoleLogger = logger({file: 'test2.log', console: true});
+	const fileAndConsoleLogger = logger({ file: 'test2.log', console: true });
 	fileAndConsoleLogger.info('salut');
 	fileAndConsoleLogger.error('bien');
 	fileAndConsoleLogger.warn('fais gaffe');
+
+	const fileLogger2 = logger({ file: 'test-rotation.log', maxFiles: 2, maxSize: 10000 });
+	setInterval(() => {
+		fileLogger2.info('blablabla');
+	}, 100);
 })();

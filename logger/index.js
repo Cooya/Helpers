@@ -9,7 +9,7 @@ const colors = {
 	debug: 'white'
 };
 
-module.exports = ({db = null, file = null, console = false} = {}) => {
+module.exports = ({ db = null, file = null, console = false, append = true, maxFiles = undefined, maxSize = undefined } = {}) => {
 	const moduleName = process.mainModule ? path.basename(process.mainModule.filename) : 'unknown';
 	const transportsList = [];
 	const formats = [
@@ -40,7 +40,10 @@ module.exports = ({db = null, file = null, console = false} = {}) => {
 		transportsList.push(new transports.File({
 			level: process.env.DEBUG ? 'debug' : 'info',
 			filename: file,
-			options: {flags: 'w'}
+			maxsize: maxSize,
+			maxFiles,
+			tailable: true,
+			options: { flags: append ? 'a' : 'w' }
 		}));
 	}
 
