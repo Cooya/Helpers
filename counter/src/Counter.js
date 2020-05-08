@@ -3,7 +3,6 @@ const MongoClient = require('mongodb').MongoClient;
 
 let mongoConnection;
 let counters;
-let cache = {};
 
 module.exports = class {
 	// private constructor
@@ -11,8 +10,14 @@ module.exports = class {
 		this.id = id;
 	}
 
-	inc() {
-		return counters.updateOne({ id: this.id }, { $inc: { value: 1 } }, { upsert: true });
+	async inc() {
+		try {
+			return await counters.updateOne({ id: this.id }, { $inc: { value: 1 } }, { upsert: true });
+		} catch(e) {
+			if(e.code === 11000)
+				return this.inc();
+			throw e;
+		}
 	}
 
 	async val() {
@@ -25,7 +30,8 @@ module.exports = class {
 	}
 
 	static async connect(dbUrl) {
-		if (mongoConnection) return;
+		if (mongoConnection)
+			return;
 		mongoConnection = await MongoClient.connect(dbUrl, { useNewUrlParser: true });
 		counters = mongoConnection.db().collection('counters');
 		await counters.createIndex({ id: 1 }, { name: 'id_index', unique: true });
@@ -40,9 +46,7 @@ module.exports = class {
 	static get(id, options = {}) {
 		if (options.dailyCounter || options.daily) id = id + '-' + dateFormat(new Date(), 'dd-mm-yyyy');
 		else if (options.global) id = id + '-global';
-
-		if (!cache[id]) cache[id] = new this(id);
-		return cache[id];
+		return new this(id);
 	}
 
 	static inc(id, options = {}) {
@@ -65,6 +69,6 @@ module.exports = class {
 	}
 
 	static clearAll() {
-		return mongoConnection.db().collection('counters').drop();
+		return mongoConnection.db().collection('counters').deleteMany();
 	}
 };
