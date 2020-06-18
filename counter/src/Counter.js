@@ -30,17 +30,19 @@ module.exports = class {
 	}
 
 	static async connect(dbUrl) {
-		if (mongoConnection)
-			return;
-		mongoConnection = await MongoClient.connect(dbUrl, { useNewUrlParser: true });
-		counters = mongoConnection.db().collection('counters');
-		await counters.createIndex({ id: 1 }, { name: 'id_index', unique: true });
+		if (!mongoConnection) {
+			mongoConnection = await MongoClient.connect(dbUrl, { useNewUrlParser: true });
+			counters = mongoConnection.db().collection('counters');
+			await counters.createIndex({ id: 1 }, { name: 'id_index', unique: true });
+		}
 	}
 
 	static async disconnect() {
-		await mongoConnection.close();
-		mongoConnection = null;
-		counters = null;
+		if(mongoConnection) {
+			await mongoConnection.close();
+			mongoConnection = null;
+			counters = null;
+		}
 	}
 
 	static get(id, options = {}) {
