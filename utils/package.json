@@ -1,6 +1,6 @@
 {
   "name": "@coya/utils",
-  "version": "1.5.10",
+  "version": "1.5.11",
   "description": "Utility methods for my personal use",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,6 @@
     "iconv-lite": "^0.4.24",
     "mkdirp": "^0.5.1",
     "request": "^2.88.0",
-    "sleep": "^6.0.0",
     "xml2js": "^0.4.19"
   }
 }

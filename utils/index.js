@@ -7,7 +7,6 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const iconv = require('iconv-lite');
 const mkdirp = require('mkdirp');
-const sleep = require('sleep');
 const xml2js = require('xml2js');
 
 const readFile = util.promisify(fs.readFile);
@@ -15,6 +14,9 @@ const writeFile = util.promisify(fs.writeFile);
 const fileStat = util.promisify(fs.stat);
 const parseXML = util.promisify(xml2js.parseString);
 const mkdir = util.promisify(mkdirp);
+
+const sleep = seconds => new Promise(resolve => setTimeout(resolve, seconds * 1000));
+
 const builder = new xml2js.Builder({ rootName: 'xml' });
 
 let logger = null;
@@ -73,7 +75,7 @@ function getRandomNumber(min, max) {
 async function randomSleep(min, max) {
 	let ms = max ? getRandomNumber(min * 1000, max * 1000) : min * 1000;
 	if(logger) logger.info('Sleeping for %s milliseconds...', ms);
-	await sleep.msleep(ms);
+	await sleep(ms * 1000);
 }
 
 function resolveUrl(base, url) {
@@ -96,10 +98,10 @@ function getLinks($, selector) {
 	return array;
 }
 
-async function waitForValue(variable, expectedValue, delay = 500, iterations = 10) {
+async function waitForValue(variable, expectedValue, delay = 0.5, iterations = 10) {
 	for (let i = 0; i < iterations; ++i) {
 		if (variable == expectedValue) return true;
-		await sleep.msleep(delay);
+		await sleep(delay);
 	}
 	return false;
 }
@@ -114,7 +116,7 @@ async function attempt(action, attemptsNumber = 3) {
 			err = e;
 		}
 		if(logger) logger.info('Trying again in 5 seconds...');
-		await sleep.sleep(5);
+		await sleep(5);
 		resolveUrl;
 	}
 	throw err;
@@ -178,10 +180,10 @@ async function request(method, url, options = {}) {
 		} catch (e) {
 			if (e.code == 'ENOTFOUND' && i < 5) {
 				if(logger) logger.warn('Server unreachable, trying again in 5 seconds...');
-				sleep.msleep(5000);
+				await sleep(5);
 			} else if (e.message == 'socket hang up') {
 				if(logger) logger.warn('The socket has hanged up, trying again in 5 seconds...');
-				sleep.msleep(5000);
+				await sleep(5);
 			} else if (e.message == 'Request failed with status code 404') {
 				if(logger) logger.error('The server has returned 404 for url "%s".', url);
 				return 404;
@@ -250,7 +252,8 @@ Date.prototype.isNHoursOld = function(n) {
 };
 
 Date.fromSeconds = (s) => new Date(1970, 0, 1, 0, 0, s);
-Date.ParisGMT = new Date().toLocaleString('fr-FR', {timeZone: 'Europe/Paris', timeZoneName: 'short'}).match(/(GMT.*)$/)[1];
+Date.ParisGMT = parseInt(new Date().toLocaleString('en-US', { timeZone: 'Europe/Paris', timeZoneName: 'short' }).match(/(GMT|UTC)\+([0-9]+)$/)[2]);
+console.log(Date.ParisGMT);
 
 String.prototype.capitalizeFirstLetter = function() {return this.charAt(0).toUpperCase() + this.slice(1).toLowerCase();};
 String.prototype.simplify = function() {return this.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');};

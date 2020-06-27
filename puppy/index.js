@@ -1,10 +1,10 @@
 const fs = require('fs');
 const puppeteer = require('puppeteer');
-const sleep = require('sleep');
 const util = require('util');
 
 const readFile = util.promisify(fs.readFile);
 const writeFile = util.promisify(fs.writeFile);
+const sleep = seconds => new Promise(resolve => setTimeout(resolve, seconds * 1000));
 
 let logger = console;
 let screenshotsFolder = '';
@@ -116,7 +116,7 @@ async function infiniteScroll(page, action) {
 			window.scrollBy(0, document.body.scrollHeight);
 			return document.body.scrollHeight;
 		});
-		await sleep.sleep(1);
+		await sleep(1);
 		if (oldScrollPos == newScrollPos) break;
 		oldScrollPos = newScrollPos;
 		result = await action();
