@@ -252,8 +252,7 @@ Date.prototype.isNHoursOld = function(n) {
 };
 
 Date.fromSeconds = (s) => new Date(1970, 0, 1, 0, 0, s);
-Date.ParisGMT = parseInt(new Date().toLocaleString('en-US', { timeZone: 'Europe/Paris', timeZoneName: 'short' }).match(/(GMT|UTC)\+([0-9]+)$/)[2]);
-console.log(Date.ParisGMT);
+Date.ParisGMT = new Date().toLocaleString('en-US', { timeZone: 'Europe/Paris', timeZoneName: 'short' }).match(/((GMT|UTC)\+[0-9]+)$/)[1];
 
 String.prototype.capitalizeFirstLetter = function() {return this.charAt(0).toUpperCase() + this.slice(1).toLowerCase();};
 String.prototype.simplify = function() {return this.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');};

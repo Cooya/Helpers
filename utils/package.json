@@ -1,6 +1,6 @@
 {
   "name": "@coya/utils",
-  "version": "1.5.11",
+  "version": "1.5.12",
   "description": "Utility methods for my personal use",
   "main": "index.js",
   "scripts": {
