@@ -31,7 +31,7 @@ module.exports = class {
 
 	static async connect(dbUrl) {
 		if (!mongoConnection) {
-			mongoConnection = await MongoClient.connect(dbUrl, { useNewUrlParser: true });
+			mongoConnection = await MongoClient.connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true });
 			counters = mongoConnection.db().collection('counters');
 			await counters.createIndex({ id: 1 }, { name: 'id_index', unique: true });
 		}
