@@ -15,9 +15,7 @@ const fileStat = util.promisify(fs.stat);
 const parseXML = util.promisify(xml2js.parseString);
 const mkdir = util.promisify(mkdirp);
 
-const sleep = seconds => new Promise(resolve => setTimeout(resolve, seconds * 1000));
-
-const builder = new xml2js.Builder({ rootName: 'xml' });
+const ParisGMT = new Date().toLocaleString('en-US', { timeZone: 'Europe/Paris', timeZoneName: 'short' }).match(/((GMT|UTC)\+[0-9]+)$/)[1];
 
 let logger = null;
 function setLogger(_logger) {
@@ -30,6 +28,7 @@ async function readXMLFile(filePath) {
 }
 
 async function writeXMLFile(filePath, content) {
+	const builder = new xml2js.Builder({ rootName: 'xml' });
 	const xml = builder.buildObject(content);
 	await writeFile(filePath, xml);
 }
@@ -96,6 +95,10 @@ function getLinks($, selector) {
 	});
 
 	return array;
+}
+
+function sleep(seconds) {
+	return new Promise(resolve => setTimeout(resolve, seconds * 1000));
 }
 
 async function waitForValue(variable, expectedValue, delay = 0.5, iterations = 10) {
@@ -206,58 +209,24 @@ async function requestPage(method, url, options = {}) {
 	return cheerio.load(data);
 }
 
-Array.prototype.equalsTo = function(arr) {
-	if (this === arr) return true;
-	if (this == null || arr == null) return false;
-	if (this.length != arr.length) return false;
+function areEqualArrays(arr1, arr2) {
+	if (arr1 === arr2) return true;
+	if (arr1 == null || arr2 == null) return false;
+	if (arr1.length != arr2.length) return false;
 
-	for (var i = 0; i < this.length; ++i) {
-		if (this[i] !== arr[i]) return false;
-	}
+	for (var i = 0; i < arr1.length; ++i)
+		if (arr1[i] !== arr2[i])
+			return false;
+
 	return true;
-};
+}
 
-Array.prototype.getItemWithKey = function(key, value) {
-	for (let item of this) {
-		if (item[key] == value) return item;
-	}
-	return null;
-};
-
-Array.prototype.removeItem = function(value) {
-	for (let i = 0; i < this.length; ++i) {
-		if (this[i] == value) {
-			this.splice(i, 1);
-			break;
-		}
-	}
-	return this;
-};
-
-Date.prototype.addDays = function(days) {
-	const date = new Date(this.valueOf());
-	date.setDate(date.getDate() + days);
-	return date;
-};
-
-Date.prototype.addSeconds = function(seconds) {
-	const date = new Date(this.valueOf());
-	date.setSeconds(date.getSeconds() + seconds);
-	return date;
-};
-
-Date.prototype.isNHoursOld = function(n) {
-	const nHours = 1000 * 3600 * n; // in milliseconds
-	return new Date().getTime() - this.getTime() < nHours;
-};
-
-Date.fromSeconds = (s) => new Date(1970, 0, 1, 0, 0, s);
-Date.ParisGMT = new Date().toLocaleString('en-US', { timeZone: 'Europe/Paris', timeZoneName: 'short' }).match(/((GMT|UTC)\+[0-9]+)$/)[1];
-
-String.prototype.capitalizeFirstLetter = function() {return this.charAt(0).toUpperCase() + this.slice(1).toLowerCase();};
-String.prototype.simplify = function() {return this.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');};
+function simplifyString(str) {
+	return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
 
 module.exports = {
+	ParisGMT,
 	setLogger,
 	readXMLFile,
 	writeXMLFile,
@@ -269,11 +238,14 @@ module.exports = {
 	randomSleep,
 	resolveUrl,
 	getLinks,
+	sleep,
 	waitForValue,
 	attempt,
 	asyncForEach,
 	asyncThreads,
 	request,
 	get: requestPage.bind(null, 'get'),
-	post: requestPage.bind(null, 'post')
+	post: requestPage.bind(null, 'post'),
+	areEqualArrays,
+	simplifyString
 };
