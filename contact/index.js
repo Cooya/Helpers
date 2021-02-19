@@ -2,7 +2,7 @@ const nodemailer = require('nodemailer');
 
 module.exports = class Mail {
 	constructor(config) {
-		if(!config.host || !config.port || !config.login || !config.password)
+		if(!config.host || !config.port || !config.auth && (!config.login || !config.password))
 			throw new Error('Missing parameters for sending emails.');
 		
 		this.login = config.login;
@@ -12,7 +12,7 @@ module.exports = class Mail {
 			host: config.host,
 			port: config.port,
 			secure: config.port == 465,
-			auth: {
+			auth: config.auth || {
 				user: config.login,
 				pass: config.password
 			},
@@ -29,20 +29,24 @@ module.exports = class Mail {
 		if(!params.text && !params.html)
 			throw new Error('Email content (text or html) must be specified.');
 
-		// recipient(s)
-		if(!params.to)
-			params.to = this.login;
-		else
-			params.to = Array.isArray(params.to) ? params.to.join(',') : params.to;
+		const user = params.auth ? params.auth.user : this.login;
 
-		// sender
+		// recipient(s)
+		params.to = !params.to ? user : Array.isArray(params.to) ? params.to.join(',') : params.to;
+		if(!params.to)
+			throw new Error('Email recipient must be specified.');
+
+		// sender address
+		if(!params.from) params.from = user;
 		if(!params.from)
-			params.from = this.login;
+			throw new Error('Email sender must be specified');
+
+		// sender name
 		const name = params.name || this.name;
 		if(name)
 			params.from = `${name} <${params.from}>`;
 
-		// email content
+		// subject
 		if(!params.subject)
 			params.subject = 'No subject';
 
