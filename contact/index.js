@@ -16,7 +16,9 @@ module.exports = class Mail {
 				user: config.login,
 				pass: config.password
 			},
-			dkim: config.dkim
+			dkim: config.dkim,
+			pool: config.pool || false,
+			maxConnections: config.maxConnections || 5
 		});
 	}
 
