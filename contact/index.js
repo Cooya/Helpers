@@ -55,4 +55,8 @@ module.exports = class Mail {
 		// sending
 		return this.transporter.sendMail(params);
 	}
+
+	disconnect() {
+		this.transporter.close();
+	}
 };
